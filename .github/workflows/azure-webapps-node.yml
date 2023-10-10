@@ -24,7 +24,7 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: nextazuredeploywebapp # set this to your application's name
-  AZURE_WEBAPP_PACKAGE_PATH: "." # set this to the path to your web app project, defaults to the repository root
+  AZURE_WEBAPP_PACKAGE_PATH: "./.next/standalone" # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: "18.x" # set this to the node version to use
 
 permissions:
@@ -50,10 +50,7 @@ jobs:
           cp -R ./public ./.next/standalone/public
           cp -R ./.next/static ./.next/standalone/.next/static
 
-      - name: zip artifact
-        run: |
-          cd ./.next/standalone
-          zip -r ../../release.zip .
+          zip -r release.zip ./.next/standalone
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -77,10 +74,7 @@ jobs:
           name: node-app
 
       - name: unzip artifact
-        run: |
-          unzip release.zip
-          rm release.zip
-          ls -la
+        run: unzip release.zip
 
       - name: "Deploy to Azure WebApp"
         id: deploy-to-webapp
