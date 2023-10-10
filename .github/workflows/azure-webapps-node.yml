@@ -50,9 +50,10 @@ jobs:
           cp -R ./public ./.next/standalone/public
           cp -R ./.next/static ./.next/standalone/.next/static
 
-          zip release.zip -r ./.next/standalone
-
-      # - run: sed -i 's/"next start"/"node server.js"/g' ./.next/standalone/package.json
+      - name: zip artifact
+        run: |
+          cd ./.next/standalone
+          zip -r ../../release.zip .
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -78,6 +79,8 @@ jobs:
       - name: unzip artifact
         run: |
           unzip release.zip
+          rm release.zip
+          ls -la
 
       - name: "Deploy to Azure WebApp"
         id: deploy-to-webapp
